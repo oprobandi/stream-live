@@ -1,13 +1,13 @@
 {
   "name": "stream-live",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Free-first video platform. Browse and watch without friction. Premium unlocks only when you choose it.",
   "homepage": "https://your-github-username.github.io/stream-live",
   "private": true,
   "scripts": {
     "start": "npx serve . --listen 3000",
-    "deploy": "gh-pages -d . --dotfiles",
-    "predeploy": "echo 'Deploying Stream Live to GitHub Pages…'"
+    "predeploy": "git config user.email \"deploy@streamlive.io\" && git config user.name \"Stream Live\" && echo 'Deploying Stream Live to GitHub Pages…'",
+    "deploy": "gh-pages -d . --dotfiles --no-history"
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",

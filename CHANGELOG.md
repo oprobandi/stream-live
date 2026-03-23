@@ -6,6 +6,24 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.3.3] — 2026-03-23
+
+> **Featured carousel.** Five-slide category showcase between hero and grid. Crossfade autoplay, grid filtering on click, full keyboard + responsive support. See ADR-012.
+
+### Added
+- `assets/js/carousel.js` — new `SL.carousel` module: 5-slide crossfade carousel, 3500ms interval, 500ms transition, pause on hover, prev/next arrows, dot indicators, keyboard ArrowLeft/ArrowRight, Enter/Space on slides
+- Carousel section in `index.html` — between hero and video grid; 5 category slides (Nature, Ocean, City, Food, Tech) with Unsplash imagery, headings, subtitles, CTA buttons
+- Clicking any slide or CTA filters video grid to that category and smooth-scrolls down
+- Carousel responsive: `21/8` desktop → `16/7` tablet → `4/3` mobile → `1/1` small phone; arrows hidden on mobile
+- `docs/adr/ADR-012-featured-carousel.md`
+
+### Changed
+- `assets/js/app.js` — `SL.carousel.init()` wired into async boot sequence
+- `package.json` version → 1.3.3
+- Footer version → V1.3.3
+
+---
+
 ## [1.3.2] — 2026-03-23
 
 > **Responsive layout overhaul.** Replaces the 2-breakpoint system with a full 4-tier cascade: 1024px · 768px · 640px · 375px. Pure CSS + minimal JS label wrapping. See ADR-011.

@@ -94,6 +94,109 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════ FEATURED CAROUSEL ═══════════════ -->
+<section id="carousel-section" aria-label="Featured categories">
+  <div class="carousel-header">
+    <span class="carousel-eyebrow">Featured</span>
+    <h2 class="carousel-title">Browse by Category</h2>
+  </div>
+  <div class="carousel-wrap" id="carousel-wrap"
+       onmouseenter="SL.carousel.pause()"
+       onmouseleave="SL.carousel.resume()">
+    <div class="carousel-track" id="carousel-track" aria-live="polite">
+
+      <!-- Slide 1 — Nature -->
+      <div class="carousel-slide active" data-cat="Nature" role="button" tabindex="0"
+           aria-label="Browse Nature videos">
+        <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1400&q=80"
+             alt="Patagonia landscape" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-tag">Nature</span>
+          <h3 class="slide-heading">Wild &amp; Untouched</h3>
+          <p class="slide-sub">Landscapes that remind you the world is vast.</p>
+          <button class="slide-cta">Explore Nature →</button>
+        </div>
+      </div>
+
+      <!-- Slide 2 — Ocean -->
+      <div class="carousel-slide" data-cat="Ocean" role="button" tabindex="0"
+           aria-label="Browse Ocean videos">
+        <img src="https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1400&q=80"
+             alt="Deep ocean" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-tag">Ocean</span>
+          <h3 class="slide-heading">Into the Deep</h3>
+          <p class="slide-sub">Three thousand metres below — never before filmed.</p>
+          <button class="slide-cta">Explore Ocean →</button>
+        </div>
+      </div>
+
+      <!-- Slide 3 — City -->
+      <div class="carousel-slide" data-cat="City" role="button" tabindex="0"
+           aria-label="Browse City videos">
+        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1400&q=80"
+             alt="Tokyo at night" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-tag">City</span>
+          <h3 class="slide-heading">Urban Pulse</h3>
+          <p class="slide-sub">Cities breathe differently after midnight.</p>
+          <button class="slide-cta">Explore City →</button>
+        </div>
+      </div>
+
+      <!-- Slide 4 — Food -->
+      <div class="carousel-slide" data-cat="Food" role="button" tabindex="0"
+           aria-label="Browse Food videos">
+        <img src="https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=1400&q=80"
+             alt="Sourdough bread" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-tag">Food</span>
+          <h3 class="slide-heading">Craft &amp; Flavour</h3>
+          <p class="slide-sub">Michelin chefs. Real kitchens. No shortcuts.</p>
+          <button class="slide-cta">Explore Food →</button>
+        </div>
+      </div>
+
+      <!-- Slide 5 — Tech -->
+      <div class="carousel-slide" data-cat="Tech" role="button" tabindex="0"
+           aria-label="Browse Tech videos">
+        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1400&q=80"
+             alt="Code on screen" loading="lazy">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-tag">Tech</span>
+          <h3 class="slide-heading">Think Different</h3>
+          <p class="slide-sub">Quantum minds, generative code, the future now.</p>
+          <button class="slide-cta">Explore Tech →</button>
+        </div>
+      </div>
+
+    </div><!-- /carousel-track -->
+
+    <!-- Arrows -->
+    <button class="carousel-arrow carousel-prev" onclick="SL.carousel.prev()" aria-label="Previous slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="carousel-arrow carousel-next" onclick="SL.carousel.next()" aria-label="Next slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+
+    <!-- Dots -->
+    <div class="carousel-dots" id="carousel-dots" role="tablist" aria-label="Slide indicators">
+      <button class="carousel-dot active" data-idx="0" onclick="SL.carousel.goTo(0)" role="tab" aria-label="Slide 1"></button>
+      <button class="carousel-dot" data-idx="1" onclick="SL.carousel.goTo(1)" role="tab" aria-label="Slide 2"></button>
+      <button class="carousel-dot" data-idx="2" onclick="SL.carousel.goTo(2)" role="tab" aria-label="Slide 3"></button>
+      <button class="carousel-dot" data-idx="3" onclick="SL.carousel.goTo(3)" role="tab" aria-label="Slide 4"></button>
+      <button class="carousel-dot" data-idx="4" onclick="SL.carousel.goTo(4)" role="tab" aria-label="Slide 5"></button>
+    </div>
+
+  </div><!-- /carousel-wrap -->
+</section>
+
 <!-- ═══════════════════════════ VIDEO GRID ══════════════════════ -->
 <section id="grid-section" aria-label="Video library">
   <div class="grid-header">
@@ -154,7 +257,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Stream Live · All rights reserved · V1.3.2 · Built without dark patterns</span>
+    <span>© 2026 Stream Live · All rights reserved · V1.3.3 · Built without dark patterns</span>
   </div>
 </footer>
 
@@ -437,6 +540,7 @@
 <script src="assets/js/player.js"></script>
 <script src="assets/js/upload.js"></script>
 <script src="assets/js/premium.js"></script>
+<script src="assets/js/carousel.js"></script>
 <script src="assets/js/views.js"></script>
 <script src="assets/js/app.js"></script>
 

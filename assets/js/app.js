@@ -84,6 +84,7 @@ SL.app = {
     await SL.store.init();
     SL.views.renderNav();
     SL.views.renderGrid();
+    SL.carousel.init();
 
     if (SL.store.user) {
       document.getElementById('cat-mine').classList.remove('hidden');

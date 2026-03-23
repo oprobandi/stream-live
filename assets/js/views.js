@@ -24,11 +24,14 @@ SL.views = {
       el.innerHTML = `
         <button class="btn-nav-upload" onclick="SL.upload.open()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
-          Upload
+          <span class="upload-btn-label">Upload</span>
         </button>
         ${premiumBadge}
         <div class="nav-avatar" title="${this._esc(user.name)}">${user.avatar}</div>
-        <button class="btn-nav-ghost sm" onclick="SL.auth.logout()">Sign Out</button>
+        <button class="btn-nav-ghost sm" onclick="SL.auth.logout()" aria-label="Sign Out">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span class="signout-label">Sign Out</span>
+        </button>
       `;
       document.getElementById('hero-join-btn').classList.add('hidden');
       document.getElementById('cat-mine').classList.remove('hidden');

@@ -756,15 +756,76 @@ input, select, textarea { font-family: inherit; color: var(--text); background: 
 .hidden { display: none !important; }
 
 /* ── Responsive ───────────────────────────────────────────────── */
-@media (max-width: 900px) {
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE SYSTEM — V1.3.2
+   Breakpoints: 1024px · 768px · 640px · 375px
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1024px — Tablet landscape ────────────────────────────────── */
+@media (max-width: 1024px) {
+  /* Hero: hide floating cards, left-align */
   .hero-visual { display: none; }
-  .hero-inner  { justify-content: center; text-align: center; }
-  .hero-actions { justify-content: center; }
-  .hero-sub    { margin: 0 auto 32px; }
-  .player-box  { max-width: 100%; border-radius: var(--r-md); }
+  .hero-inner  { justify-content: flex-start; }
+  .hero-content { max-width: 680px; }
+
+  /* Grid: enforce 3 columns max */
+  .video-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Player: full width */
+  .player-box { max-width: 100%; border-radius: var(--r-md); }
+
+  /* Footer: tighter gap */
+  .footer-links { gap: 32px; }
 }
+
+/* ── 768px — Tablet portrait ──────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Hero: center everything */
+  .hero-inner   { justify-content: center; text-align: center; }
+  .hero-actions { justify-content: center; }
+  .hero-sub     { margin: 0 auto 32px; }
+
+  /* Grid: 2 columns */
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* Player meta: stack vertically */
+  .player-meta {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .player-info { width: 100%; }
+
+  /* Player share + badge: row below title */
+  .player-meta > div:last-child {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  /* Modals: reduce padding */
+  .modal-box { padding: 28px 22px; max-height: 95vh; }
+
+  /* Gate plan toggle: stack */
+  .plan-toggle { flex-direction: column; }
+
+  /* Upload field row: stack */
+  .field-row { flex-direction: column; }
+  .upload-actions { flex-direction: column; }
+
+  /* Footer: stack brand + links */
+  .footer-inner { flex-direction: column; gap: 32px; }
+  .footer-brand { max-width: 100%; }
+}
+
+/* ── 640px — Large phone ──────────────────────────────────────── */
 @media (max-width: 640px) {
-  .nav-inner   { gap: 10px; }
+  /* Nav */
+  .nav-inner { gap: 8px; }
+
+  /* Hide full search bar — replaced by toggle */
   .nav-search-wrap {
     position: absolute; top: var(--nav-h); left: 0; right: 0;
     background: var(--bg2); border-bottom: 1px solid var(--border);
@@ -773,11 +834,117 @@ input, select, textarea { font-family: inherit; color: var(--text); background: 
   }
   .nav-search-wrap.mobile-open { display: flex; }
   #nav-search-toggle { display: flex; }
-  .footer-inner{ flex-direction: column; gap: 32px; }
-  .modal-box   { padding: 24px 20px; }
-  .plan-toggle { flex-direction: column; }
-  .field-row   { flex-direction: column; }
-  .upload-actions { flex-direction: column; }
+
+  /* Nav actions: compress */
+  .nav-actions { gap: 6px; }
+
+  /* Upload button: icon only */
+  .btn-nav-upload .upload-btn-label { display: none; }
+  .btn-nav-upload { padding: 7px 10px; gap: 0; }
+
+  /* Sign out: icon only (hide text) */
+  .btn-nav-ghost.sm .signout-label { display: none; }
+  .btn-nav-ghost.sm { padding: 7px 10px; min-width: 34px; justify-content: center; }
+
+  /* Increase touch targets */
+  .btn-nav-ghost,
+  .btn-nav-primary,
+  .btn-nav-upload,
+  .btn-nav-premium,
+  #nav-search-toggle,
+  #theme-toggle,
+  .modal-close { min-height: 44px; min-width: 44px; }
+
+  .modal-close {
+    width: 38px; height: 38px;
+    top: 12px; right: 12px;
+  }
+
+  /* Grid: single column on small phones */
+  .video-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Hero: tighter padding */
+  #hero { padding: clamp(32px, 6vh, 56px) var(--pad); }
+
+  /* Modals: edge-to-edge feel */
+  .modal-overlay { padding: 12px; }
+  .modal-box { padding: 24px 18px; border-radius: var(--r-lg); }
+
+  /* Auth tabs: smaller text */
+  .auth-tab { font-size: 10px; padding: 7px; }
+
+  /* Gate features: tighter */
+  .gate-features li { font-size: 10px; }
+
+  /* Player close: bigger tap target */
+  .player-close { width: 40px; height: 40px; font-size: 22px; }
+
+  /* Player meta: more compact */
+  .player-title { font-size: 16px; }
+  .player-desc  { font-size: 13px; }
+
+  /* Footer: compact */
+  .footer-links { flex-direction: column; gap: 24px; }
+  .footer-bottom { font-size: 9px; }
+}
+
+/* ── 375px — Small phone (iPhone SE, older Androids) ──────────── */
+@media (max-width: 375px) {
+  /* Nav: tightest layout */
+  .nav-inner { padding: 0 12px; gap: 6px; }
+  .brand-text { font-size: 13px; }
+
+  /* Hide theme toggle to save space — still accessible via settings */
+  #theme-toggle { display: none; }
+
+  /* Nav premium badge: shorten */
+  .nav-premium-badge { padding: 3px 6px; font-size: 9px; }
+
+  /* Grid: true single column */
+  .video-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Cards: horizontal layout on single column */
+  .video-card {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    grid-template-rows: auto;
+  }
+  .card-thumb {
+    aspect-ratio: unset;
+    height: 100%;
+    min-height: 90px;
+  }
+  .card-meta { padding: 10px 12px; align-items: flex-start; }
+  .card-title { font-size: 13px; }
+
+  /* Hero: minimal padding */
+  #hero { padding: 28px 16px; }
+  .hero-title { font-size: clamp(28px, 8vw, 36px); }
+  .hero-actions { flex-direction: column; gap: 10px; }
+  .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+
+  /* Modal: full screen feel */
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal-box {
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    max-height: 92vh;
+    padding: 20px 16px;
+  }
+
+  /* Player: bottom sheet style */
+  .player-box { border-radius: var(--r-md) var(--r-md) 0 0; }
+
+  /* Grid section: tighter */
+  #grid-section { padding: 24px 16px 60px; }
+
+  /* Cat bar: smaller pills */
+  .cat-btn { font-size: 10px; padding: 4px 12px; }
 }
 
 /* ── Skeleton Loaders ─────────────────────────────────────────── */

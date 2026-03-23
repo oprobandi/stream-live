@@ -6,6 +6,26 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.3.2] — 2026-03-23
+
+> **Responsive layout overhaul.** Replaces the 2-breakpoint system with a full 4-tier cascade: 1024px · 768px · 640px · 375px. Pure CSS + minimal JS label wrapping. See ADR-011.
+
+### Added
+- 1024px breakpoint — tablet landscape: 3-column grid, left-aligned hero, full-width player
+- 768px breakpoint — tablet portrait: 2-column grid, stacked player meta, stacked modals
+- 640px breakpoint — large phone: icon-only Upload + Sign Out buttons, 44px touch targets enforced on all interactive elements, bottom-reduced modal padding
+- 375px breakpoint — small phone: single-column grid, horizontal card layout (140px thumb + text), bottom-sheet modals, full-width hero CTAs, theme toggle hidden to save nav space
+- Sign Out button now shows logout SVG icon (always visible); label hidden at ≤640px
+- `docs/adr/ADR-011-responsive-layout.md`
+
+### Changed
+- `assets/js/views.js` — Upload label wrapped in `<span class="upload-btn-label">`, Sign Out label wrapped in `<span class="signout-label">` for CSS-controlled visibility
+- `assets/css/main.css` — old `900px`/`640px` blocks replaced with full 4-tier system
+- `package.json` version → 1.3.2
+- Footer version → V1.3.2
+
+---
+
 ## [1.3.1] — 2026-03-23
 
 > **Palette + security hotfix.** Pure CSS colour swap and one-line cookie hardening. See ADR-010.

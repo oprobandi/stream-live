@@ -9,7 +9,8 @@ SL.cookies = {
   set(name, value, days = 7) {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     const encoded = encodeURIComponent(typeof value === 'object' ? JSON.stringify(value) : value);
-    document.cookie = `${name}=${encoded}; expires=${expires}; path=/; SameSite=Lax`;
+    const secure  = location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${name}=${encoded}; expires=${expires}; path=/; SameSite=Lax${secure}`;
   },
 
   /** Get a cookie value (auto-parses JSON if possible) */

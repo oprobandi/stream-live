@@ -6,6 +6,23 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.3.1] — 2026-03-23
+
+> **Palette + security hotfix.** Pure CSS colour swap and one-line cookie hardening. See ADR-010.
+
+### Changed
+- `--primary` `#00e5a0` → `#f5c542` (electric mint → gold)
+- `--premium` `#ff7043` → `#e8503a` (light orange → deep red-orange)
+- All derived `rgba` dim/glow tokens updated to match
+- Footer version string → V1.3.1
+- `package.json` version → 1.3.1
+
+### Security
+- `cookies.js` — `Secure` flag added to all cookie writes; protocol-aware (HTTPS only) so `npm start` on localhost continues to work
+
+### Added
+- `docs/adr/ADR-010-brand-palette-gold.md`
+
 ## [1.3.0] — 2026-03-23
 
 > **Polish & UX release.** Clears the entire 🟡 V1.x backlog. No backend required — all improvements are client-side. See ADR-008 and ADR-009.
@@ -58,6 +75,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - `vercel.json` rewritten to minimal modern format
 
 ### Added
+- `cookies.js` — `Secure` flag added to all cookie writes; protocol-aware (HTTPS only) so `npm start` on localhost still works
+
 - `docs/adr/ADR-007-deploy-fixes-termux.md`
 
 ---
@@ -65,6 +84,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [1.1.0] — 2026-03-23
 
 ### Added
+- `cookies.js` — `Secure` flag added to all cookie writes; protocol-aware (HTTPS only) so `npm start` on localhost still works
+
 - `package.json` with `npm start` and `npm run deploy` scripts
 - `netlify.toml`, `vercel.json`, `.gitignore`
 - `docs/adr/` — ADR-001 through ADR-006

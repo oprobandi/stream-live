@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════
-   Stream Live V1.0 — upload.js
+   Stream Live V1.3 — upload.js
    Handles the full upload flow: drag-drop, form, progress bar,
    and adding the new video to the grid on completion.
-   Upload requires auth — uses pendingAction if not logged in.
+   V1.3: persists uploads to IndexedDB so they survive page reload.
    ═══════════════════════════════════════════════════════════════ */
 
 SL.upload = {
@@ -20,16 +20,20 @@ SL.upload = {
       return;
     }
     this._reset();
-    document.getElementById('modal-upload').classList.remove('hidden');
-    document.getElementById('modal-upload').classList.add('open');
+    const modal = document.getElementById('modal-upload');
+    modal.classList.remove('hidden');
+    modal.classList.add('open');
     document.body.style.overflow = 'hidden';
+    SL.a11y.trapFocus(modal);
   },
 
   close() {
-    if (this._uploading) return; // Prevent close mid-upload
-    document.getElementById('modal-upload').classList.add('hidden');
-    document.getElementById('modal-upload').classList.remove('open');
+    if (this._uploading) return;
+    const modal = document.getElementById('modal-upload');
+    modal.classList.add('hidden');
+    modal.classList.remove('open');
     document.body.style.overflow = '';
+    SL.a11y.releaseFocus();
     this._reset();
   },
 
@@ -40,7 +44,6 @@ SL.upload = {
     this._isPremium = false;
     this._uploading = false;
 
-    // Reset UI
     document.getElementById('upload-zone').classList.remove('hidden');
     document.getElementById('upload-form').classList.add('hidden');
     document.getElementById('upload-progress').classList.add('hidden');
@@ -161,17 +164,24 @@ SL.upload = {
     };
 
     SL.store.videos.unshift(newVideo);
+
     // Track in user uploads
     if (!user.uploads) user.uploads = [];
     user.uploads.push(newVideo.id);
     SL.store.saveUser();
 
+    // Persist to IndexedDB — survives page reload
+    SL.idb.save(newVideo, this._file, this._thumbFile).catch(err => {
+      console.warn('[upload] Could not persist to IndexedDB:', err);
+    });
+
     this._uploading = false;
     this.close();
     SL.views.renderGrid();
-    // Activate "My Uploads" tab
     SL.store.currentCat = 'Mine';
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === 'Mine'));
+    document.querySelectorAll('.cat-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.cat === 'Mine')
+    );
     SL.views.renderGrid();
     SL.toast.show(`"${title}" is live! 🎬`);
   },

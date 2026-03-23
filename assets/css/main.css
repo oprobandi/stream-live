@@ -32,6 +32,26 @@
   --pad:    clamp(16px, 4vw, 60px);
 }
 
+/* ── Light Mode ───────────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:          #f4f5f7;
+  --bg2:         #eceef2;
+  --surface:     #ffffff;
+  --surface2:    #f0f1f5;
+  --border:      #dde0e8;
+  --border2:     #c5cad8;
+  --text:        #1a1f2e;
+  --text-muted:  #5a6482;
+  --text-dim:    #9aa0b8;
+  --primary-dim: rgba(0,175,120,.1);
+  --primary-glow:rgba(0,175,120,.18);
+  --shadow:    0 4px 24px rgba(0,0,0,.1);
+  --shadow-lg: 0 16px 56px rgba(0,0,0,.18);
+}
+[data-theme="light"] body { background: var(--bg); }
+[data-theme="light"] .modal-backdrop { background: rgba(0,0,0,.55); }
+[data-theme="light"] #navbar { background: rgba(244,245,247,.92); }
+
 /* ── Reset + Base ─────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -745,10 +765,85 @@ input, select, textarea { font-family: inherit; color: var(--text); background: 
 }
 @media (max-width: 640px) {
   .nav-inner   { gap: 10px; }
-  .nav-search-wrap { display: none; }
+  .nav-search-wrap {
+    position: absolute; top: var(--nav-h); left: 0; right: 0;
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 10px var(--pad); max-width: 100%;
+    display: none; z-index: 75;
+  }
+  .nav-search-wrap.mobile-open { display: flex; }
+  #nav-search-toggle { display: flex; }
   .footer-inner{ flex-direction: column; gap: 32px; }
   .modal-box   { padding: 24px 20px; }
   .plan-toggle { flex-direction: column; }
   .field-row   { flex-direction: column; }
   .upload-actions { flex-direction: column; }
 }
+
+/* ── Skeleton Loaders ─────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+.skeleton-card { pointer-events: none; cursor: default; }
+.skeleton-card:hover { transform: none; box-shadow: none; border-color: var(--border); }
+.skeleton-thumb {
+  aspect-ratio: 16/9;
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-avatar {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line {
+  height: 11px; border-radius: 6px; margin-bottom: 8px;
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line.w80 { width: 80%; }
+.skeleton-line.w50 { width: 50%; }
+
+/* Skeleton while a card image is loading */
+.card-thumb.skeleton-loading {
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite;
+}
+.card-thumb.skeleton-loading img { opacity: 0; transition: opacity .3s; }
+.card-thumb:not(.skeleton-loading) img { opacity: 1; }
+
+/* ── Mobile search toggle button ──────────────────────────────── */
+#nav-search-toggle {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--border); color: var(--text-muted);
+  background: none; transition: border-color .2s, color .2s;
+  flex-shrink: 0;
+}
+#nav-search-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Theme toggle button ──────────────────────────────────────── */
+#theme-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--border); color: var(--text-muted);
+  background: none; transition: border-color .2s, color .2s;
+  flex-shrink: 0;
+}
+#theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Player share button ──────────────────────────────────────── */
+.player-share-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 1px solid var(--border2);
+  color: var(--text-muted); padding: 7px 14px; border-radius: 20px;
+  font-family: var(--fm); font-size: 11px; letter-spacing: .05em;
+  transition: border-color .2s, color .2s; cursor: pointer; flex-shrink: 0;
+}
+.player-share-btn:hover { border-color: var(--primary); color: var(--primary); }

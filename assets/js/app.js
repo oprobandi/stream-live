@@ -1,8 +1,49 @@
 /* ═══════════════════════════════════════════════════════════════
-   Stream Live V1.0 — app.js
-   Entry point: initialises all modules, wires event delegation,
-   and defines the toast notification system.
+   Stream Live V1.3 — app.js
+   Entry point + toast system + accessibility utilities.
+   V1.3: async init (IndexedDB), keyboard focus trap, mobile search,
+         deep-link ?v= routing, dark/light mode toggle.
    ═══════════════════════════════════════════════════════════════ */
+
+/* ── Accessibility — focus trap ───────────────────────────────── */
+SL.a11y = (() => {
+  const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  let _handler = null;
+  let _prev    = null;
+
+  function trapFocus(modal) {
+    releaseFocus();
+    _prev = document.activeElement;
+    const getFocusable = () => [...modal.querySelectorAll(FOCUSABLE)].filter(el => !el.closest('.hidden'));
+
+    _handler = e => {
+      if (e.key !== 'Tab') return;
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    };
+    modal.addEventListener('keydown', _handler);
+  }
+
+  function releaseFocus() {
+    if (_handler) {
+      document.querySelectorAll('.modal-overlay').forEach(m => m.removeEventListener('keydown', _handler));
+      _handler = null;
+    }
+    if (_prev && typeof _prev.focus === 'function') {
+      try { _prev.focus(); } catch (_) {}
+      _prev = null;
+    }
+  }
+
+  return { trapFocus, releaseFocus };
+})();
 
 /* ── Toast system ─────────────────────────────────────────────── */
 SL.toast = {
@@ -23,7 +64,6 @@ SL.toast = {
     el.className = `toast toast-${type}`;
     el.innerHTML = `<span class="toast-msg">${msg}</span>`;
     container.appendChild(el);
-    // Animate in
     requestAnimationFrame(() => el.classList.add('toast-show'));
     setTimeout(() => {
       el.classList.remove('toast-show');
@@ -36,21 +76,43 @@ SL.toast = {
 /* ── Main app controller ──────────────────────────────────────── */
 SL.app = {
 
-  init() {
-    // Bootstrap state
-    SL.store.init();
+  async init() {
+    // Show skeletons immediately while IndexedDB loads
+    SL.views.renderSkeletons();
+
+    // Bootstrap state (async — waits for IndexedDB)
+    await SL.store.init();
     SL.views.renderNav();
     SL.views.renderGrid();
 
-    // Show My Uploads tab if already logged in
     if (SL.store.user) {
       document.getElementById('cat-mine').classList.remove('hidden');
     }
+
+    // Theme — restore preference
+    const savedTheme = localStorage.getItem('sl_theme') || 'dark';
+    document.documentElement.dataset.theme = savedTheme;
+    this._updateThemeBtn(savedTheme);
 
     // Search input
     document.getElementById('nav-search').addEventListener('input', e => {
       SL.store.searchQuery = e.target.value;
       SL.views.renderGrid();
+    });
+
+    // Mobile search toggle
+    document.getElementById('nav-search-toggle').addEventListener('click', () => {
+      this.toggleMobileSearch();
+    });
+
+    // Close mobile search on outside click
+    document.addEventListener('click', e => {
+      const wrap   = document.querySelector('.nav-search-wrap');
+      const toggle = document.getElementById('nav-search-toggle');
+      if (wrap.classList.contains('mobile-open') &&
+          !wrap.contains(e.target) && !toggle.contains(e.target)) {
+        wrap.classList.remove('mobile-open');
+      }
     });
 
     // Category bar — event delegation
@@ -87,26 +149,54 @@ SL.app = {
       SL.premium.closeGate();
       SL.upload.close();
     });
+
+    // Deep-link: ?v=<id> — open player on page load if present
+    const params = new URLSearchParams(location.search);
+    const deepId = parseInt(params.get('v'), 10);
+    if (deepId) {
+      const video = SL.store.videos.find(v => v.id === deepId);
+      if (video) setTimeout(() => this.handleVideoClick(deepId), 400);
+    }
   },
 
-  /** Core routing logic for video access — free-first, never compulsive */
+  toggleMobileSearch() {
+    const wrap = document.querySelector('.nav-search-wrap');
+    const isOpen = wrap.classList.toggle('mobile-open');
+    if (isOpen) {
+      setTimeout(() => document.getElementById('nav-search').focus(), 80);
+    }
+  },
+
+  toggleTheme() {
+    const html    = document.documentElement;
+    const newTheme = html.dataset.theme === 'light' ? 'dark' : 'light';
+    html.dataset.theme = newTheme;
+    localStorage.setItem('sl_theme', newTheme);
+    this._updateThemeBtn(newTheme);
+  },
+
+  _updateThemeBtn(theme) {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    btn.innerHTML = theme === 'dark'
+      ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`
+      : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+  },
+
+  /** Core routing logic — free-first, never compulsive */
   handleVideoClick(videoId) {
     const video = SL.store.videos.find(v => v.id === videoId);
     if (!video) return;
 
     if (!video.premium) {
-      // Free content — no auth needed, ever
       SL.player.open(video);
       return;
     }
-
     if (SL.store.canWatch(video)) {
-      // User has a plan OR has purchased this video
       SL.player.open(video);
       return;
     }
-
-    // Premium gate — user can close it and keep browsing for free
     SL.store.pendingVideo = video;
     SL.premium.openGate(video);
   },

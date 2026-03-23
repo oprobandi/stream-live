@@ -30,6 +30,12 @@
       <input id="nav-search" type="search" class="nav-search" placeholder="Search titles, creators…" autocomplete="off" aria-label="Search videos">
     </div>
 
+    <button id="nav-search-toggle" aria-label="Search" title="Search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+
+    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme" onclick="SL.app.toggleTheme()"></button>
+
     <div class="nav-actions" id="nav-actions">
       <!-- Rendered by views.js -->
     </div>
@@ -148,7 +154,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Stream Live · All rights reserved · V1.0 · Built without dark patterns</span>
+    <span>© 2026 Stream Live · All rights reserved · V1.3 · Built without dark patterns</span>
   </div>
 </footer>
 
@@ -254,6 +260,10 @@
         <p class="player-desc" id="player-desc"></p>
       </div>
       <div id="player-badge"></div>
+        <button class="player-share-btn" onclick="SL.player.share()" aria-label="Share this video">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Share
+        </button>
     </div>
   </div>
 </div>
@@ -418,9 +428,10 @@
 </div>
 
 
-<!-- Scripts — load order matters (data → cookies → store → controllers → views → app) -->
+<!-- Scripts — load order matters (data → cookies → idb → store → controllers → views → app) -->
 <script src="assets/js/data.js"></script>
 <script src="assets/js/cookies.js"></script>
+<script src="assets/js/idb.js"></script>
 <script src="assets/js/store.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/player.js"></script>

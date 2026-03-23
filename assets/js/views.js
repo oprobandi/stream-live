@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
-   Stream Live V1.0 — views.js
-   All DOM rendering logic. Keeps controllers clean.
+   Stream Live V1.3 — views.js
+   All DOM rendering logic.
+   V1.3: skeleton loaders while images load, poster on thumbnails.
    ═══════════════════════════════════════════════════════════════ */
 
 SL.views = {
@@ -34,10 +35,26 @@ SL.views = {
     }
   },
 
+  /** Show skeleton cards while content loads */
+  renderSkeletons(count = 8) {
+    const grid = document.getElementById('video-grid');
+    grid.innerHTML = Array.from({ length: count }, () => `
+      <article class="video-card skeleton-card" aria-hidden="true">
+        <div class="card-thumb skeleton-thumb"></div>
+        <div class="card-meta">
+          <div class="skeleton-avatar"></div>
+          <div class="card-info">
+            <div class="skeleton-line w80"></div>
+            <div class="skeleton-line w50"></div>
+          </div>
+        </div>
+      </article>`).join('');
+  },
+
   /** Main grid renderer — filters, sorts, renders cards */
   renderGrid() {
-    const sort    = document.getElementById('sort-select')?.value || 'newest';
-    let vids      = [...SL.store.filtered];
+    const sort = document.getElementById('sort-select')?.value || 'newest';
+    let vids   = [...SL.store.filtered];
 
     if      (sort === 'popular') vids.sort((a, b) => b.views - a.views);
     else if (sort === 'free')    vids.sort((a, b) => a.premium - b.premium);
@@ -74,10 +91,13 @@ SL.views = {
 
     return `
       <article class="video-card${v.premium ? ' is-premium' : ''}${locked ? ' is-locked' : ''}"
-               data-id="${v.id}" role="button" tabindex="0"
+               data-id="${v.id}" role="listitem" tabindex="0"
                aria-label="Watch ${this._esc(v.title)}">
-        <div class="card-thumb">
-          <img src="${this._esc(v.thumb)}" alt="${this._esc(v.title)}" loading="lazy" decoding="async">
+        <div class="card-thumb skeleton-loading">
+          <img src="${this._esc(v.thumb)}" alt="${this._esc(v.title)}"
+               loading="lazy" decoding="async"
+               onload="this.closest('.card-thumb').classList.remove('skeleton-loading')"
+               onerror="this.closest('.card-thumb').classList.remove('skeleton-loading')">
           <div class="card-overlay">
             ${locked
               ? `<div class="card-lock-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>`

@@ -6,31 +6,76 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.3.0] — 2026-03-23
+
+> **Polish & UX release.** Clears the entire 🟡 V1.x backlog. No backend required — all improvements are client-side. See ADR-008 and ADR-009.
+
+### Added
+- **IndexedDB upload persistence** (`assets/js/idb.js`) — uploaded videos now survive page reload; raw `File` objects stored in IndexedDB, fresh blob URLs generated on init
+- **Keyboard focus trap in all modals** (`SL.a11y`) — Tab key cycles within open modal per WCAG 2.1 SC 2.1.2; focus restored to trigger element on close
+- **Share button on player modal** — uses Web Share API on mobile, Clipboard API on desktop, toast fallback; copies `?v=<id>` deep-link URL
+- **Deep linking** (`?v=<id>`) — opening a shared URL auto-opens the correct video; URL updated on player open/close via `history.replaceState`
+- **Mobile search** — search icon tap reveals full-width search bar below navbar on screens ≤ 640px; closes on outside click
+- **Dark / Light mode toggle** — sun/moon button in navbar; preference persisted to `localStorage`; full `[data-theme="light"]` CSS variable override
+- **Skeleton loaders** — shimmer placeholder cards shown immediately while IndexedDB initialises; individual card thumbnails also shimmer until image loads
+- **Video poster attribute** — thumbnail shown in `<video>` element while buffering, eliminating black flash
+- **Scroll position memory** — closing the player modal restores exact scroll position instead of jumping to top
+- **GitHub Actions deploy** (`.github/workflows/deploy.yml`) — replaces broken `npm run deploy` / Termux `gh-pages`; auto-deploys to GitHub Pages on every push to `main` (see ADR-008)
+- `docs/adr/ADR-008-github-actions-deploy.md`
+- `docs/adr/ADR-009-v1.3-frontend-improvements.md`
+
+### Changed
+- `package.json` — version bumped to `1.3.0`; `gh-pages` devDependency removed; `predeploy`/`deploy` scripts removed
+- `assets/js/store.js` — `init()` is now `async` to await IndexedDB bootstrap
+- `assets/js/app.js` — `init()` is now `async`; shows skeletons before await; registers mobile search toggle + theme toggle
+- `index.html` — added `#nav-search-toggle`, `#theme-toggle`, player share button; added `idb.js` script tag; updated script load-order comment; footer version → V1.3
+
+### Fixed
+- Search bar invisible on mobile with no alternative input method
+- Uploaded videos lost on page reload
+- Modal keyboard navigation leaked focus to background page
+- Player opened at wrong scroll position on close
+- `<video>` element showed black frame while buffering
+- No way to share or bookmark a specific video
+
+### Removed
+- `gh-pages` npm package (replaced by GitHub Actions — see ADR-008)
+- `npm run deploy` script (deploy now automatic on `git push`)
+- `npm run predeploy` script
+
+---
+
+## [1.2.0] — 2026-03-23
+
+> **Deploy hotfix release.** V1.1 was tested on Termux (Android) — two deploy failures were observed and fixed. See ADR-007.
+
+### Fixed
+- **gh-pages `src refspec gh-pages does not match any`** — fixed by running `git config user.email / user.name` in `predeploy` and adding `--no-history` flag
+- **`vercel.json` `builds` deprecation warning** — replaced legacy format with modern `rewrites` API
+
+### Changed
+- `package.json` version bumped to `1.2.0`
+- `vercel.json` rewritten to minimal modern format
+
+### Added
+- `docs/adr/ADR-007-deploy-fixes-termux.md`
+
+---
+
 ## [1.1.0] — 2026-03-23
 
 ### Added
-- `package.json` with `npm start` (local dev server) and `npm run deploy` (GitHub Pages) scripts
-- `netlify.toml` — zero-config Netlify deploy with SPA redirect rule
-- `vercel.json` — zero-config Vercel static deploy
-- `.gitignore` — excludes `node_modules/`, `.DS_Store`, logs
-- `docs/adr/` — Architecture Decision Records for all six major decisions:
-  - ADR-001: Vanilla JS over framework
-  - ADR-002: Real `document.cookie` over localStorage
-  - ADR-003: Free-first, non-compulsive auth
-  - ADR-004: `pendingAction` pattern for post-auth resumption
-  - ADR-005: Stream Live design system
-  - ADR-006: Dual monetisation (subscription + per-video purchase)
-- `docs/TODO.md` — prioritised backlog for V2.0
-- This `CHANGELOG.md`
-- README updated with `file://` cookie caveat, npm commands, and ADR index
+- `package.json` with `npm start` and `npm run deploy` scripts
+- `netlify.toml`, `vercel.json`, `.gitignore`
+- `docs/adr/` — ADR-001 through ADR-006
+- `docs/TODO.md`, `CHANGELOG.md`
 
 ### Changed
-- Project folder renamed from `streamlive/` → `stream-live/` to match npm package name and `gh repo create` slug convention
-- README expanded with deploy instructions and architecture overview
+- Project folder renamed `streamlive/` → `stream-live/`
 
 ### Fixed
-- `npm run deploy` now works correctly (was missing in V1.0)
-- `npm start` runs a proper local server, avoiding `file://` origin cookie issues
+- `npm run deploy` now works
+- `npm start` avoids `file://` cookie issues
 
 ---
 
@@ -38,28 +83,17 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Initial release — complete vanilla HTML/CSS/JS video platform
-- 14 seed videos across 6 categories (Nature, City, Ocean, Food, Tech, Sport)
-- Free video playback with real `<video>` element and public sample sources
-- Cookie-based session auth (`SL.cookies` — real `document.cookie`, not localStorage)
-- Login / Signup modal with demo account (`demo@streamlive.io` / `demo1234`)
-- Premium gate modal with monthly ($7.99) and annual ($59.99) subscription plans
-- Per-video purchase for purchasable premium videos
-- `pendingAction` pattern — resumes interrupted user intent after login
-- Drag-and-drop video upload with progress simulation and premium toggle
-- Live search and category filter with sort order (Newest / Most Viewed / Free First)
-- "My Uploads" category tab (visible after login only)
-- Toast notification system with success / error / info types
-- Stream Live design system: Syne + JetBrains Mono + Lora, electric mint + warm orange palette
-- Responsive layout down to 320px
-- Keyboard navigation and ARIA roles on all interactive elements
-- Footer with honest cookie disclosure
+- 14 seed videos across 6 categories
+- Cookie-based session auth, premium gate, per-video purchase
+- `pendingAction` pattern, drag-and-drop upload, live search, toast system
+- Stream Live design system: Syne + JetBrains Mono + Lora, electric mint palette
 
 ---
 
-## Roadmap (see also docs/TODO.md)
+## Roadmap
 
 | Version | Theme |
 |---|---|
-| V1.2 | Backend API (Node/Express or Supabase) |
-| V1.3 | Real payment integration (Stripe) |
-| V2.0 | Creator dashboard, analytics, comments |
+| V1.4 | Backend API (Supabase — real auth, real video metadata) |
+| V1.5 | Stripe payments (Checkout for subscriptions + per-video) |
+| V2.0 | Creator dashboard, analytics, comments, playlists |

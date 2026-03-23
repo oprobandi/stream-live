@@ -1,18 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════
-   Stream Live V1.0 — auth.js
+   Stream Live V1.3 — auth.js
    Handles login, signup, logout, and the auth modal.
-   Implements the pendingAction pattern from File 2:
-   whatever the user was trying to do is stored and resumed
-   automatically after a successful authentication.
+   V1.3: keyboard focus trap via SL.a11y.
    ═══════════════════════════════════════════════════════════════ */
 
 SL.auth = {
 
-  _mode: 'login',  // 'login' | 'signup'
+  _mode: 'login',
 
   open(mode = 'login', noticeText = null) {
     this.setMode(mode);
-    const notice = document.getElementById('auth-notice');
+    const notice   = document.getElementById('auth-notice');
     const noticeEl = document.getElementById('auth-notice-text');
     if (noticeText) {
       noticeEl.textContent = noticeText;
@@ -21,9 +19,10 @@ SL.auth = {
       notice.classList.add('hidden');
     }
     this._clearErrors();
-    document.getElementById('modal-auth').classList.remove('hidden');
-    document.getElementById('modal-auth').classList.add('open');
-    // Focus first field
+    const modal = document.getElementById('modal-auth');
+    modal.classList.remove('hidden');
+    modal.classList.add('open');
+    SL.a11y.trapFocus(modal);
     setTimeout(() => {
       const el = document.getElementById(mode === 'login' ? 'login-email' : 'signup-name');
       el && el.focus();
@@ -31,8 +30,10 @@ SL.auth = {
   },
 
   close() {
-    document.getElementById('modal-auth').classList.add('hidden');
-    document.getElementById('modal-auth').classList.remove('open');
+    const modal = document.getElementById('modal-auth');
+    modal.classList.add('hidden');
+    modal.classList.remove('open');
+    SL.a11y.releaseFocus();
     this._clearErrors();
     this._clearFields();
   },
@@ -57,10 +58,8 @@ SL.auth = {
     const errEl    = document.getElementById('login-error');
 
     if (!email || !password) return this._showError(errEl, 'Please fill in all fields.');
-
     const user = SL.data.users.find(u => u.email === email && u.password === password);
     if (!user) return this._showError(errEl, 'Invalid email or password.');
-
     this._completeAuth({ ...user });
   },
 
@@ -78,12 +77,10 @@ SL.auth = {
     if (SL.data.users.find(u => u.email === email)) return this._showError(errEl, 'That email is already registered.');
 
     const newUser = {
-      id: Date.now(),
-      name, email, password,
+      id: Date.now(), name, email, password,
       plan: null, planExpiry: null,
       avatar: name[0].toUpperCase(),
-      uploads: [],
-      purchased: [],
+      uploads: [], purchased: [],
     };
     SL.data.users.push(newUser);
     this._completeAuth(newUser);
@@ -94,7 +91,6 @@ SL.auth = {
     SL.cookies.del('sl_session');
     SL.views.renderNav();
     SL.views.renderGrid();
-    // Hide My Uploads tab
     document.getElementById('cat-mine').classList.add('hidden');
     if (SL.store.currentCat === 'Mine') {
       SL.store.currentCat = 'All';
@@ -109,11 +105,9 @@ SL.auth = {
     this.close();
     SL.views.renderNav();
     SL.views.renderGrid();
-    // Show My Uploads tab
     document.getElementById('cat-mine').classList.remove('hidden');
     SL.toast.show(`Welcome${user.plan ? ' back' : ''}, ${user.name}! 👋`);
 
-    // Resume whatever the user was trying to do (pendingAction pattern)
     if (SL.store.pendingAction) {
       const action = SL.store.pendingAction;
       SL.store.pendingAction = null;
@@ -127,7 +121,7 @@ SL.auth = {
   },
 
   _clearErrors() {
-    ['login-error','signup-error'].forEach(id => {
+    ['login-error', 'signup-error'].forEach(id => {
       const el = document.getElementById(id);
       if (el) { el.textContent = ''; el.classList.add('hidden'); }
     });

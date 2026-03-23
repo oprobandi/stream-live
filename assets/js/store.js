@@ -1,20 +1,21 @@
 /* ═══════════════════════════════════════════════════════════════
-   Stream Live V1.0 — store.js
+   Stream Live V1.3 — store.js
    Central reactive state. All modules read from and write to SL.store.
+   V1.3: init() is now async — bootstraps IndexedDB uploads before render.
    ═══════════════════════════════════════════════════════════════ */
 
 SL.store = {
 
   user:          null,    // Current user object or null
-  videos:        [],      // All videos (initial + uploaded)
+  videos:        [],      // All videos (seed + persisted uploads)
   pendingAction: null,    // Fn to execute after auth completes
   pendingVideo:  null,    // Video pending access after auth/subscribe
   currentCat:   'All',
   searchQuery:  '',
 
-  /** Bootstrap state from data + cookies */
-  init() {
-    // Load videos
+  /** Bootstrap state from data + cookies + IndexedDB */
+  async init() {
+    // Load seed videos
     this.videos = [...SL.data.videos];
 
     // Restore session from cookie
@@ -23,13 +24,26 @@ SL.store = {
       const found = SL.data.users.find(u => u.email === session.email);
       if (found) {
         this.user = { ...found };
-        // Refresh cookie TTL
         SL.cookies.set('sl_session', { email: found.email });
       }
     }
+
+    // Load persisted user uploads from IndexedDB
+    try {
+      await SL.idb.init();
+      const saved = await SL.idb.loadAll();
+      // Prepend (newest first), skip any id collision with seed data
+      for (const v of saved) {
+        if (!this.videos.find(x => x.id === v.id)) {
+          this.videos.unshift(v);
+        }
+      }
+    } catch (err) {
+      console.warn('[store] IndexedDB unavailable — uploads will not persist:', err);
+    }
   },
 
-  /** Live-computed filtered+searched video list */
+  /** Live-computed filtered + searched video list */
   get filtered() {
     const { currentCat, searchQuery, user } = this;
     const q = searchQuery.toLowerCase().trim();

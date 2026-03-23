@@ -111,10 +111,16 @@ input, select, textarea { font-family: inherit; color: var(--text); background: 
   background: none; border: none; cursor: pointer;
 }
 .brand-icon {
-  width: 30px; height: 30px; border-radius: 8px;
+  width: 32px; height: 32px; border-radius: 8px;
   background: var(--primary); color: #000;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(245,197,66,.25), inset 0 1px 0 rgba(255,255,255,.15);
+  transition: box-shadow .2s, transform .2s;
+}
+.nav-brand:hover .brand-icon {
+  box-shadow: 0 0 0 3px rgba(245,197,66,.25), inset 0 1px 0 rgba(255,255,255,.15);
+  transform: scale(1.06);
 }
 .brand-icon.small { width: 24px; height: 24px; border-radius: 6px; }
 .brand-text {

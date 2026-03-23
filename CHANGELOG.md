@@ -6,6 +6,26 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.3.4] — 2026-03-23
+
+> **Favicon, logo refinement & social meta.** SVG favicon, refined brand icon, full OG + Twitter Card tags. Pure `<head>` + CSS — no JS changes. See ADR-013.
+
+### Added
+- SVG favicon via `data:` URI — gold rounded square + black play triangle, matches brand icon exactly
+- Apple touch icon (180×180 SVG) for iOS home screen bookmarks
+- `<meta name="theme-color" content="#f5c542">` — gold browser chrome on Android
+- Full Open Graph tag set: `og:type`, `og:site_name`, `og:title`, `og:description`, `og:image` (ocean, 1200×630), `og:image:alt`, `og:url`
+- Twitter / X Card: `summary_large_image` with same ocean image
+- `docs/adr/ADR-013-favicon-og-logo.md`
+
+### Changed
+- Brand icon polygon refined: `points="6,3 20,12 6,21"` → `points="7,4 19,12 7,20"` — optically centred in all instances (navbar, footer, auth modal)
+- `.brand-icon` CSS — size 30→32px; inner highlight + definition ring via `box-shadow`; hover scale + glow ring on `.nav-brand:hover`
+- `package.json` version → 1.3.4
+- Footer version → V1.3.4
+
+---
+
 ## [1.3.3] — 2026-03-23
 
 > **Featured carousel.** Five-slide category showcase between hero and grid. Crossfade autoplay, grid filtering on click, full keyboard + responsive support. See ADR-012.

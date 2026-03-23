@@ -1,0 +1,22 @@
+{
+  "name": "stream-live",
+  "version": "1.3.4",
+  "description": "Free-first video platform. Browse and watch without friction. Premium unlocks only when you choose it.",
+  "homepage": "https://oprobandi.github.io/stream-live",
+  "private": true,
+  "scripts": {
+    "start": "npx serve . --listen 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oprobandi/stream-live.git"
+  },
+  "keywords": ["video", "streaming", "platform", "free-first"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
